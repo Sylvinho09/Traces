@@ -1,4 +1,8 @@
-import { TestBed, async } from '@angular/core/testing';
+/**
+ * Le fichier component.spec permet de faire des tests unitaires lors du lancement de l'application
+ */
+
+/**import { TestBed, async } from '@angular/core/testing';
 
 import { AppComponent } from './app.component';
 
@@ -29,4 +33,4 @@ describe('AppComponent', () => {
     const compiled = fixture.debugElement.nativeElement;
     expect(compiled.querySelector('h1').textContent).toContain('Welcome to app!!');
   }));
-});
+});**/

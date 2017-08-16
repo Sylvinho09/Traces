@@ -1,0 +1,118 @@
+
+
+<!--<div class="ui-g">-->
+    <!--<div class="ui-g-12 ui-md-4">
+        <h3>Veuillez sélectionner l'intervalle de temps à observer </h3>
+        <p-calendar [(ngModel)]="value" [locale]="fr" dateFormat="dd MM yy"></p-calendar> {{value}}
+    </div>
+</div>-->
+<div class="haut">
+<h3> Veuillez sélectionner l'intervalle de temps à observer</h3>
+  <button pButton type="button" (click)="onclick()" label="Go !"></button>
+  <button pButton type="button" (click)="unlog()" label="Déconnexion"></button>
+<app-upload-file></app-upload-file>
+  <!-- p-growl module de primeNG pour l'affichage du message d'erreur quand mauvaise saisie des millisecondes -->
+<p-growl [(value)]="msgs" [life]=1000></p-growl>
+  <br/><br/>
+ <button pButton type="button"  (click)="addLine()" label="+"></button>
+ <button pButton type="button"  (click)="removeLine()" label="-"></button>
+  <button pButton type="button"  (click)="attributesSearch()" label="Rechercher les blocs correspondants"></button>
+  <button pButton type="button" (click)="infos()" label="Infos"></button>
+  <p-dialog header="Informations" [(visible)]="displayInfos" modal="modal" width="600" [responsive]="true">
+  <div>
+    En haut :
+    <li> Le bouton "+" permet d'ajouter une nouvelle ligne.</li>
+      <li> Le bouton "-" permet de retirer une ligne.</li>
+    <li> Le bouton "Rechercher les blocs correspondants" permet de lancer la recherche </li>
+    A gauche :
+    <li> Le bouton "+" permet de dupliquer la ligne sur laquelle le bouton est situé. Tous les attributs de cette ligne
+      seront dupliqués sur la ligne d'en-dessous. La différence entre les 2 lignes permet de faire un OR.
+      <br/>
+      Les saisies acceptées pour le champ "datas" sont 
+      <li> clé-valeur </li>
+      <li> clé- </li>
+      <li> -valeur </li>
+      Attention, si pour la même ligne d'attributs il y a 2 clefs identiques dans data, seule la 2ème sera prise en compte.
+
+    
+    </div>      
+            </p-dialog>
+
+
+<table>
+  <tr>
+    <th *ngFor="let column of columns">{{column}}</th>
+  </tr>
+  <tr *ngFor="let line of nbFilterLine">
+
+    <div>
+    <td *ngIf="!lineAttributes[line].duplicate" > <button  pButton type="button"  id="{{line}}" (click)="addDuplicateLine(line)" label="+"></button></td>
+     <td *ngIf="!lineAttributes[line].duplicate"><button  pButton type="button"  id="{{line}}" (click)="removeDuplicateLine(line)" label="-"></button></td>
+</div>
+
+    <td><input type="text" id="sessionId{{line}}" [(ngModel)]="lineAttributes[line].sessionId" (input)="displayTab()"/><!--{{lineAttributes[line].sessionId}}--></td>
+    <td><input type="text" id="username{{line}}" [(ngModel)]="lineAttributes[line].userName"/><!--{{lineAttributes[line].userName}}--></td>
+    <td><input type="text" id="remoteAdress{{line}}" [(ngModel)]="lineAttributes[line].remoteAdress"/><!--{{lineAttributes[line].remoteAdress}}--></td>
+    <td><input type="text" id="agentName{{line}}" [(ngModel)]="lineAttributes[line].agentName"/><!--{{lineAttributes[line].agentName}}--></td>
+    <td><input type="text" id="softwareName{{line}}" [(ngModel)]="lineAttributes[line].softwareName"/><!--{{lineAttributes[line].softwareName}}--></td>
+    <td><input type="text" id="softwareRelease{{line}}" [(ngModel)]="lineAttributes[line].softwareRelease"/><!--{{lineAttributes[line].softwareRelease}}--></td>
+    <td><input type="text" id="softwareVersion{{line}}" [(ngModel)]="lineAttributes[line].softwareVersion"/><!--{lineAttributes[line].softwareVersion}}--></td>
+   <!-- <td><input type="text" id="dataKey{{line}}" [(ngModel)]="lineAttributes[line].dataKey"/>{{lineAttributes[line].dataKey}}</td>
+    <td><input type="text" id="dataValue{{line}}" [(ngModel)]="lineAttributes[line].dataValue"/>{{lineAttributes[line].dataValue}}</td>-->
+    <td> <button pButton type="button" (click)="openSelectionDataDialog(line)" label="Datas"></button></td>
+    <td><input type="text" id="type{{line}}" [(ngModel)]="lineAttributes[line].type"/><!--{{lineAttributes[line].type}}--></td>
+    <td><input type="text" id="className{{line}}" [(ngModel)]="lineAttributes[line].className"/><!--{{lineAttributes[line].className}}--></td>
+    <td><input type="text" id="methodName{{line}}" [(ngModel)]="lineAttributes[line].methodName"/><!--{{lineAttributes[line].methodName}}--></td>
+    <td><input type="text" id="event{{line}}" [(ngModel)]="lineAttributes[line].event"/><!--{{lineAttributes[line].event}}--></td>
+    <td><input type="text" id="action{{line}}" [(ngModel)]="lineAttributes[line].action"/><!--{{lineAttributes[line].action}}--></td>
+    <td><input type="text" id="actionTarget{{line}}" [(ngModel)]="lineAttributes[line].actionTarget"/><!--{{lineAttributes[line].actionTarget}}--></td>
+    <td><input type="text" id="actionTargetClass{{line}}" [(ngModel)]="lineAttributes[line].actionTargetClass"/><!--{{lineAttributes[line].actionTargetClass}}--></td>
+    <td><input type="text" id="actionDetail{{line}}" [(ngModel)]="lineAttributes[line].actionDetail"/><!--{{lineAttributes[line].actionDetail}}--></td>
+  </tr>
+</table>
+
+<!-- Page de dialogue permettant de sélectionner les attributs présents dans data -->
+  <p-dialog header="Choix des datas" [(visible)]="displayDataChoice" modal="modal" width="400" [responsive]="true">
+    <div>
+       <button pButton type="button"  (click)="addData()" label="+"></button>
+ <button pButton type="button"  (click)="removeData()" label="-"></button>
+    </div>
+    <table>
+      <tr>
+        <th> Clef </th>
+        <th> Valeur </th>
+      </tr>
+      <tr *ngFor="let line of tabDataAttributes[lineSelected].nbLines">
+        <td> <input type="text" [(ngModel)]="tabDataAttributes[lineSelected].key[line]" (input) ="displayTabData()"/> <!--{{tabDataAttributes[lineSelected].key[line]}}--></td>
+        <td> <input type="text" [(ngModel)]="tabDataAttributes[lineSelected].value[line]"/> <!--{{tabDataAttributes[lineSelected].value[line]}}--></td>
+      </tr>
+    </table>
+  </p-dialog>
+
+<div>
+ <div class="ui-g-12 ui-md-3" >
+        <h3>Date de début</h3>
+        <p-calendar [(ngModel)]="minDate" (onSelect)="onSelectMethodMinDate($event)"  [maxDate]="maxDate" [showTime]="true" [showSeconds]="true"  [locale]="fr" dateFormat="dd MM yy" (onSelect)="setMinDate(minDate)" readonlyInput="true"></p-calendar>
+      
+     <h3>Millisecondes: {{slideValueDebut}}</h3>
+     <input type="text" [(ngModel)]="slideValueDebut" (input)="handleChangeMinDate()" style="width:190px"/>
+
+<app-toggle-tab [traces]="result" [tracesCopie]="resultCop"  [selectOptions]="sessionsOptions" [totalRecords]="totalRecords" [minDate]="minDateS" [maxDate]="maxDateS" [tabDataAttributes]="tabDataAttributes" [lineAttributes]="lineAttributes" ></app-toggle-tab>
+    </div>
+ 
+
+<div class="ui-g-12 ui-md-4">
+        <h3>Date de fin</h3>
+        <p-calendar [(ngModel)]="maxDate" (onSelect)="onSelectMethodMaxDate($event)"  [minDate]="minDate" [showTime]="true" [showSeconds]="true" [locale]="fr" dateFormat="dd MM yy" (onSelect)="setMaxDate(maxDate)" readonlyInput="true"></p-calendar> 
+    <h3>Millisecondes: {{slideValueFin}}</h3>
+         <input type="text" [(ngModel)]="slideValueFin" (input)="handleChangeMaxDate()" style="width:190px"/>
+
+   
+
+  </div>
+  </div>
+  <div>
+     
+   <!-- <app-orderable-tab [traces]="result" ></app-orderable-tab>-->
+     </div>
+     <router-outlet></router-outlet>

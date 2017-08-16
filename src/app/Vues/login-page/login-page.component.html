@@ -1,0 +1,15 @@
+<body>
+<div class="login">
+  <div class="login-triangle"></div>
+  
+  <h2 class="login-header">Log in</h2>
+
+  <form #f="ngForm" class="login-container" (ngSubmit)="login(f)">
+    <p><input type="id"  placeholder="ID" name="id" ngModel></p>
+    <p><input type="password"  placeholder="Mot de passe" name="password" ngModel></p>
+    <p><input type="submit" value="Se connecter" ></p>
+  </form>
+</div>
+<p-growl [(value)]="msgs" [life]=3000></p-growl>
+
+</body>

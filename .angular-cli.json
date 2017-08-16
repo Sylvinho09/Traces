@@ -16,12 +16,15 @@
       "polyfills": "polyfills.ts",
       "test": "test.ts",
       "tsconfig": "tsconfig.app.json",
-      "testTsconfig": "tsconfig.spec.json",
+      "testTsconfig": "tsconfig.spec.json", 
       "prefix": "app",
       "styles": [
-        "styles.css"
+        "styles.css",
+          "../node_modules/font-awesome/css/font-awesome.min.css",
+          "../node_modules/primeng/resources/primeng.min.css",
+          "../node_modules/primeng/resources/themes/omega/theme.css"
       ],
-      "scripts": [],
+      "scripts": ["../node_modules/jquery/dist/jquery.min.js"],
       "environmentSource": "environments/environment.ts",
       "environments": {
         "dev": "environments/environment.ts",
