@@ -41,13 +41,18 @@
 
 <table>
   <tr>
-    <th *ngFor="let column of columns">{{column}}</th>
+    <th > Add/Remove duplicated line </th>
+    <th *ngFor="let column of columns" >{{column}}</th>
   </tr>
   <tr *ngFor="let line of nbFilterLine">
 
     <div>
+      <td>
     <td *ngIf="!lineAttributes[line].duplicate" > <button  pButton type="button"  id="{{line}}" (click)="addDuplicateLine(line)" label="+"></button></td>
+    <td *ngIf="lineAttributes[line].duplicate" > <button  pButton type="button"  id="{{line}}" (click)="addDuplicateLine(line)" label="+" style="display:none;"></button></td>
      <td *ngIf="!lineAttributes[line].duplicate"><button  pButton type="button"  id="{{line}}" (click)="removeDuplicateLine(line)" label="-"></button></td>
+     <td *ngIf="lineAttributes[line].duplicate" > <button  pButton type="button"  id="{{line}}" (click)="addDuplicateLine(line)" label="-" style="display:none;"></button></td>
+     <td>
 </div>
 
     <td><input type="text" id="sessionId{{line}}" [(ngModel)]="lineAttributes[line].sessionId" (input)="displayTab()"/><!--{{lineAttributes[line].sessionId}}--></td>

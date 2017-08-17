@@ -17,8 +17,6 @@ import {CalendarModule, GrowlModule, SliderModule, SharedModule, OrderListModule
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {FormsModule} from '@angular/forms';
 import { SanitizeHtmlPipePipe } from './Pipes/sanitize-html-pipe.pipe';
-import { OrderableTabComponent } from './Vues/calendar/Vues-Calendar/orderable-tab/orderable-tab.component';
-import { FilterTableComponent } from './Vues/calendar/Vues-Calendar/filter-table/filter-table.component';
 import { ToggleTabComponent } from './Vues/calendar/Vues-Calendar/toggle-tab/toggle-tab.component';
 import { routing, appRoutingProviders }  from './app.routing';
 import { LoginPageComponent } from './Vues/login-page/login-page.component';
@@ -32,8 +30,8 @@ import { UploadFileComponent } from './Vues/calendar/Vues-Calendar/upload-file/u
     AppComponent,
     CalendarComponent,
     SanitizeHtmlPipePipe,
-    OrderableTabComponent,
-    FilterTableComponent,
+   // OrderableTabComponent,
+    //FilterTableComponent,
     ToggleTabComponent,
     LoginPageComponent,
     UploadFileComponent,

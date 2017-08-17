@@ -74,7 +74,7 @@ export class CalendarComponent implements OnInit {
     };
 
     this.columns = [
-      "Add/Remove duplicate line", "Session ID", "Username", "RemoteAdress", "AgentName", "SoftwareName", "SoftwareRelease", "SoftwareVersion", /*"dataKey", "dataValue",*/"data",
+      /*"Add/Remove duplicate line",*/ "Session ID", "Username", "RemoteAdress", "AgentName", "SoftwareName", "SoftwareRelease", "SoftwareVersion", /*"dataKey", "dataValue",*/"data",
       "Type", "ClassName", "MethodName", "Event", "Action", "ActionTarget", "ActionTargetClass", "ActionDetail"
     ]
 
@@ -400,6 +400,7 @@ export class CalendarComponent implements OnInit {
 
   displayTab() {
     console.log("valeur du tableau: ", this.lineAttributes);
+   
 
   }
 
@@ -419,12 +420,12 @@ export class CalendarComponent implements OnInit {
       $.each(this.tabDataAttributes[i].key, (index, value) => {
 
         if (value == "") {
-          value = "UNKNOWN_KEY_BL£" + 0;
+          value = "UNKNOWN_KEY_BLL" + 0;
           let j = 0;
           $.each(this.lineAttributes[i].data, (index2, value2) => {
             if (index2 == value) {
               j++;
-              value = "UNKNOWN_KEY_BL£" + j;
+              value = "UNKNOWN_KEY_BLL" + j;
             }
           })
         }
@@ -453,6 +454,10 @@ export class CalendarComponent implements OnInit {
         console.log("valeur de la reponse recue :", res);
       }, err => {
         console.log("il y a eu une erreur lors de l'envoi des données " + err);
+        this.msgs=[];
+        this.msgs.push({ severity: 'error', summary: 'Attention', detail: "Le serveur a renvoyé une erreur (inspecter console pour détails)"});
+        
+
       });
     }
   }
@@ -513,7 +518,7 @@ export class CalendarComponent implements OnInit {
         $.each(this.lineAttributes[indice][index], (index2, value2) => {
           console.log("allempty index2", index2, "allempty value2", value2)
           if ((index2 != "" || value2 != "")) {
-            if ((index2.substring(0, 15) == "UNKNOWN_KEY_BL£") && (value2 == "")) {
+            if ((index2.substring(0, 15) == "UNKNOWN_KEY_BLL") && (value2 == "")) {
               console.log("valeur de size ", size)
               if (size > 1) {
                 console.log("iciiiiiii")
@@ -537,7 +542,7 @@ export class CalendarComponent implements OnInit {
     })
     if (empty == true && emptyData == true) {
       this.msgs = [];
-      this.msgs.push({ severity: 'error', summary: 'Attention', detail: 'Il y a une ligne sans attributs (possiblement dand data). Veuillez la remplir ou la supprimer.' });
+      this.msgs.push({ severity: 'error', summary: 'Attention', detail: 'Il y a une ligne sans attributs (possiblement dans data). Veuillez la remplir ou la supprimer.' });
 
     }
     else if (empty == false && emptyData == true) {
