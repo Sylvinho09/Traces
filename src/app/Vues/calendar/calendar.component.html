@@ -6,17 +6,33 @@
         <p-calendar [(ngModel)]="value" [locale]="fr" dateFormat="dd MM yy"></p-calendar> {{value}}
     </div>
 </div>-->
-<div class="haut">
+<div>
 <h3> Veuillez sélectionner l'intervalle de temps à observer</h3>
   <button pButton type="button" (click)="onclick()" label="Go !"></button>
   <button pButton type="button" (click)="unlog()" label="Déconnexion"></button>
-<app-upload-file></app-upload-file>
+
+ <br/>
+ <br/>
+ <br/>
+    <button pButton type="button" (click)="drop_Database()" class="ui-button-danger" label ="Drop DB" ></button>
+  <br/>
+  <br/>
+<!--<app-upload-file></app-upload-file>-->
   <!-- p-growl module de primeNG pour l'affichage du message d'erreur quand mauvaise saisie des millisecondes -->
 <p-growl [(value)]="msgs" [life]=1000></p-growl>
+
   <br/><br/>
  <button pButton type="button"  (click)="addLine()" label="+"></button>
  <button pButton type="button"  (click)="removeLine()" label="-"></button>
-  <button pButton type="button"  (click)="attributesSearch()" label="Rechercher les blocs correspondants"></button>
+  <button pButton type="button"  (click)="displayWithOrWithout()" label="Rechercher les blocs correspondants"></button>
+  <button pButton type="button" (click)="infos()" label="Infos"></button>
+
+    
+  <p-dialog header="Avec ou sans intervalle de dates ?" [(visible)]="displayBlocChoice" modal="modal" width="300" [responsive]="true">
+  <button pButton type="button"  (click)="attributesSearchWithDates()" label="Avec"></button>
+  <button pButton type="button"  (click)="attributesSearch()" label="Sans"></button>
+  </p-dialog> 
+
   <button pButton type="button" (click)="infos()" label="Infos"></button>
   <p-dialog header="Informations" [(visible)]="displayInfos" modal="modal" width="600" [responsive]="true">
   <div>
@@ -103,7 +119,14 @@
      <input type="text" [(ngModel)]="slideValueDebut" (input)="handleChangeMinDate()" style="width:190px"/>
 
 <app-toggle-tab [traces]="result" [tracesCopie]="resultCop"  [selectOptions]="sessionsOptions" [totalRecords]="totalRecords" [minDate]="minDateS" [maxDate]="maxDateS" [tabDataAttributes]="tabDataAttributes" [lineAttributes]="lineAttributes" ></app-toggle-tab>
-    </div>
+<br/>
+<br/>
+<br/>
+<app-display-blocs [blocs]="blocs"></app-display-blocs>
+<p-growl [(value)]="msgsAttributesSearch" [life]=1000></p-growl>
+
+
+</div>
  
 
 <div class="ui-g-12 ui-md-4">
@@ -117,7 +140,5 @@
   </div>
   </div>
   <div>
-     
-   <!-- <app-orderable-tab [traces]="result" ></app-orderable-tab>-->
      </div>
      <router-outlet></router-outlet>

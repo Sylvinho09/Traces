@@ -1,0 +1,7 @@
+<h2>
+  Attention, une fois le bouton cliqué, toute la base sera supprimée !
+</h2>
+<p-growl [(value)]="msgs" [life]=5000></p-growl>
+
+<button pButton type="button" (click)="drop_Database()" class="ui-button-danger" label ="Vider la base de données" ></button>
+<router-outlet></router-outlet>

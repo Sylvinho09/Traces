@@ -4,7 +4,7 @@
 <!-- unfrozenWidth : distance entre la taille du tableau et la taille de la case frozen (1235-320) -->
 <p-growl [(value)]="msgs" life="20000"></p-growl>
 
-<p-dataTable #dt [value]="traces" [rows]="30" [paginator]="true" scrollable="true"  scrollHeight="500px"  scrollWidth="1235px" frozenWidth="320px" unfrozenWidth="915px"(onFilter)="applyFilter(dt, $event)" selectionMode="single" (onRowSelect)="onRowSelected($event)" ><!--(onFilter)="applyFilter(dt, $event)"-->
+<p-dataTable #dt [value]="traces" [rows]="30" [paginator]="true" scrollable="true"  scrollHeight="500px"  scrollWidth="2550px" frozenWidth="340px" unfrozenWidth="2230px"(onFilter)="applyFilter(dt, $event)" selectionMode="single" (onRowSelect)="onRowSelected($event)" ><!--(onFilter)="applyFilter(dt, $event)"-->
     <p-header>
         <div style="text-align:left">
             <p-multiSelect [options]="columnOptions" [(ngModel)]="columns" [maxSelectedLabels]="10" ></p-multiSelect> 
@@ -32,8 +32,8 @@
         </div>
         
     </p-header>
-   <p-column field="sessionId" header="SessionID" [filter]="true" filterMatchMode="contains" [style]="{'width':'320px'}" frozen="true"></p-column>
-    <p-column *ngFor="let column of columns" [field]="column.field" [header]="column.header" [filter]="true" filterMatchMode="contains" [style]="{'width':'350px'}" ></p-column>
+   <p-column field="sessionId" header="SessionID" [filter]="true" filterMatchMode="contains" [style]="{'width':'340px'}" frozen="true"></p-column>
+    <p-column *ngFor="let column of columns" [field]="column.field" [header]="column.header" [filter]="true" filterMatchMode="contains" [style]="{'width':'450px'}" ></p-column>
 
 
 </p-dataTable>

@@ -16,6 +16,8 @@ getJSON(params: string):Observable<any>
 
 let url= "http://10.32.100.49:8080/TracesRestEE/services/"+params;
 
+var headers = new Headers();
+//headers.append("Content-Type","text/plain; charset=UTF-8");
 let allowCredential = new RequestOptions({withCredentials: true} );
 let observable = this.http.get(url,allowCredential).map((res:Response)=> res.json());
 return observable;

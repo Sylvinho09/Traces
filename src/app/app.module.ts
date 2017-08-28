@@ -21,6 +21,8 @@ import { ToggleTabComponent } from './Vues/calendar/Vues-Calendar/toggle-tab/tog
 import { routing, appRoutingProviders }  from './app.routing';
 import { LoginPageComponent } from './Vues/login-page/login-page.component';
 import { UploadFileComponent } from './Vues/calendar/Vues-Calendar/upload-file/upload-file.component';
+import { DisplayBlocsComponent } from './Vues/calendar/Vues-Calendar/display-blocs/display-blocs.component';
+import { DropDBComponent } from './Vues/calendar/Vues-Calendar/drop-db/drop-db.component';
 
 
 
@@ -35,6 +37,8 @@ import { UploadFileComponent } from './Vues/calendar/Vues-Calendar/upload-file/u
     ToggleTabComponent,
     LoginPageComponent,
     UploadFileComponent,
+    DisplayBlocsComponent,
+    DropDBComponent,
     
   ],
   imports: [

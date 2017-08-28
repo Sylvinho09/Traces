@@ -13,37 +13,42 @@ declare var $: any;
 @Component({
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
-  // styles: ['../../../../node_modules/primeng/resources/themes/omega/theme.css']
-  //'../../../../node_modules/font-awesome/css/font-awesome.min.css',
-  //'../../../../node_modules/primeng/resources/primeng.min.css']
+
 })
 
 
 export class CalendarComponent implements OnInit {
+  //result et resultCop sont les résultats récupérés lors d'un appel au service web distant 
   result: any[] = [];
   resultCop: any;
   minDateS: string;
   maxDateS: string;
+  //contiendra les valeurs qui seront affichées par les 2 calendriers de sélection des dates d'intervalle 
   fr: any;
   dMin: Date;
   dMax: Date;
 
+
   slideValueDebut: any;
   slideValueFin: any;
+  //permettra d'afficher une pop-up indiquant une information/erreur
   msgs: Message[] = [];
-  //sessions:any[];
   sessionsOptions: SelectItem[] = [];
   totalRecords: any;
 
   columns: any[] = [];
   nbFilterLine: any[] = [];
-  //nbDataChosen:any[]=[];
+  //c'est un tableau qui contient les données rentrées par l'utilisateur (hormis data) lors de la sélection des traces par attribut 
   lineAttributes: any[] = [];
-  //dataAttributes: any ={key:[],value:[]};
+  /* tableau qui contient les valeurs DATAS rentrées par l'utilisateur */
   tabDataAttributes: any[] = [];
   displayInfos: boolean = false;
   displayDataChoice: boolean = false;
+  //permet d'afficher la fenetre de dialogue si la recherche des blocs doit se faire avec ou sans intervalle de temps
+  displayBlocChoice: boolean = false;
+  //permet de retenir la dernière ligne sélectionnée de l'utilisateur 
   lineSelected: any = 0;
+  blocs: any;
 
 
 
@@ -55,12 +60,6 @@ export class CalendarComponent implements OnInit {
     this.msgs.push({ severity: 'error', summary: 'Attention', detail: 'Veuillez rentrer 2 dates ainsi qu\'une valeur entre 0 et 999' });
   }
 
-  /*setMinDateS(callback)
-  {
-    this.minDateS=`${this.dMin.getFullYear()}-${this.dMin.getMonth() + 1}-${this.dMin.getDate()} ${this.dMin.getHours() % 12}:${this.dMin.getMinutes()}:${this.dMin.getSeconds()}.0 ${this.dMin.getHours() > 12 ? "PM" : "AM"}`;
-    console.log("valeur de mindateS dans callback "+this.minDateS);
-    callback();
-  }*/
 
   /** Permet de personnaliser les valeurs affichées sur le calendrier  */
   ngOnInit() {
@@ -73,6 +72,7 @@ export class CalendarComponent implements OnInit {
       monthNamesShort: ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Jui", "Aoû", "Sep", "Oct", "Nov", "Dec"]
     };
 
+    /* servira pour la vue qui le mettra comme colonnes d'un tableeua */
     this.columns = [
       /*"Add/Remove duplicate line",*/ "Session ID", "Username", "RemoteAdress", "AgentName", "SoftwareName", "SoftwareRelease", "SoftwareVersion", /*"dataKey", "dataValue",*/"data",
       "Type", "ClassName", "MethodName", "Event", "Action", "ActionTarget", "ActionTargetClass", "ActionDetail"
@@ -86,19 +86,13 @@ export class CalendarComponent implements OnInit {
       action: "", actionTarget: "", actionTargetClass: "", actionDetail: ""
     });
 
-    /* this.dataAttributes.push({
-       key:"", value:""
-     })*/
 
-    // this.dataAttributes.key.push("");
-    //this.dataAttributes.value.push("");
     this.tabDataAttributes.push({ key: [], value: [], nbLines: [] });
     this.tabDataAttributes[0].key.push("");
     this.tabDataAttributes[0].value.push("");
     this.tabDataAttributes[0].nbLines.push(0);
 
     this.nbFilterLine.push(0);
-    //this.nbDataChosen.push(0);
 
 
   }
@@ -110,7 +104,7 @@ export class CalendarComponent implements OnInit {
     this.dMin = date;
   }
 
-  /** Inverse de dessus  */
+  /** Inverse de dessus, sont appelées dans la View  */
   setMaxDate(date: Date) {
     this.dMax = date;
   }
@@ -118,6 +112,7 @@ export class CalendarComponent implements OnInit {
     this.dMin = date;
   }
 
+  /*Fonction qui permet d'appeler le webservice et récupérer les traces comprises entre 2 dates */
   requestDatesBetween(minDate: string, maxDate: string) {
     /**
      * La vérification permet de mettre une valeur dans la ligne sessionId, afin de ne pas déséquilibrer l'affichage entre sessionId et le reste (car sessionId est affiché distinctement)
@@ -400,14 +395,20 @@ export class CalendarComponent implements OnInit {
 
   displayTab() {
     console.log("valeur du tableau: ", this.lineAttributes);
-   
+
 
   }
 
-
+  //fonction appelée lors d'un click sur "rechercher les blocs correspondants", pour afficher la fenetre de dialogue
+  //permettant de choisir avec ou sans intervalle de temps
+  displayWithOrWithout() {
+    this.displayBlocChoice = true;
+  }
 
   attributesSearch() {
 
+    //le mettre à faux permet à la fenetre de dialogue de se fermer automatiquement
+    this.displayBlocChoice = false;
     let empty: any = false;
     let duplicateAttribute: any = false;
 
@@ -419,7 +420,7 @@ export class CalendarComponent implements OnInit {
       this.lineAttributes[i].data = {};
       $.each(this.tabDataAttributes[i].key, (index, value) => {
 
-        if (value == "") {
+        if (value.trim() == "") {
           value = "UNKNOWN_KEY_BLL" + 0;
           let j = 0;
           $.each(this.lineAttributes[i].data, (index2, value2) => {
@@ -430,7 +431,7 @@ export class CalendarComponent implements OnInit {
           })
         }
         console.log("valeur de index", index, "valeur de value", value)
-        this.lineAttributes[i]["data"][value] = this.tabDataAttributes[i].value[index];
+        this.lineAttributes[i]["data"][value] = this.tabDataAttributes[i].value[index].trim();
         index++;
         console.log("valeur de lineAttributes après insertion de data ", this.lineAttributes)
 
@@ -450,17 +451,108 @@ export class CalendarComponent implements OnInit {
       var jsonValue = JSON.stringify(this.lineAttributes);
       console.log("valeur du json: ", jsonValue);
       //on fait maintenant appel au web service 
+      this.msgs/*AttributesSearch*/.push({ severity: 'info', summary: 'Recherche en cours', detail: "La recherche des blocs est en cours..." });
+
       this.getData.getJSON("selection/" + jsonValue + "/").subscribe(res => {
         console.log("valeur de la reponse recue :", res);
+        this.blocs = res;
+        this.blocs.forEach(element => {
+          if (element.sessionId == null) {
+            element.sessionId = "Non défini"
+          } if (element.userName == null) element.userName = "X"; if (element.remoteAdress == null) element.remoteAdress = "X"; if (element.softwareName == null) element.softwareName = "X"; if (element.softwareVersion == null) element.softwareVersion = "X"; if (element.timeStamp == null) element.timeStamp = "X"; if (element.className == null) element.className = "X"; if (element.event == null) element.event = "X"; if (element.action == null) element.action = "X"; if (element.actionTarget == null) element.actionTarget = "X"; if (element.actionTargetClass == null) element.actionTargetClass = "X"; if (element.actionDetail == null) element.actionDetail = "X"; if (element.methodName == null) element.methodName = "X"; if (element.agentName == null) element.agentName = "X"; if (element.data == null) element.data = "X"; if (element.type == null) element.type = "X"; if (element.softwareRelease == null) element.softwareRelease = "X";
+
+        })
+        // this.msgsAttributesSearch=[];
+        this.msgs.pop();
+        this.msgs/*AttributesSearch*/.push({ severity: 'success', summary: 'Résultat', detail: res.length + " résultats trouvés !" });
+
       }, err => {
         console.log("il y a eu une erreur lors de l'envoi des données " + err);
-        this.msgs=[];
-        this.msgs.push({ severity: 'error', summary: 'Attention', detail: "Le serveur a renvoyé une erreur (inspecter console pour détails)"});
-        
+        this.msgs = [];
+        this.msgs.push({ severity: 'error', summary: 'Attention', detail: "Le serveur a renvoyé une erreur (inspecter console pour détails)" });
+
 
       });
     }
   }
+
+  attributesSearchWithDates() {
+    //le mettre à faux permet à la fenetre de dialogue de se fermer automatiquement
+    this.displayBlocChoice = false;
+    let empty: any = false;
+    let duplicateAttribute: any = false;
+
+    for (let i = 0; i < this.tabDataAttributes.length; i++) {
+
+
+
+      let index = 0;
+      this.lineAttributes[i].data = {};
+      $.each(this.tabDataAttributes[i].key, (index, value) => {
+
+        if (value.trim() == "") {
+          value = "UNKNOWN_KEY_BLL" + 0;
+          let j = 0;
+          $.each(this.lineAttributes[i].data, (index2, value2) => {
+            if (index2 == value) {
+              j++;
+              value = "UNKNOWN_KEY_BLL" + j;
+            }
+          })
+        }
+        console.log("valeur de index", index, "valeur de value", value)
+        this.lineAttributes[i]["data"][value] = this.tabDataAttributes[i].value[index].trim();
+        index++;
+        console.log("valeur de lineAttributes après insertion de data ", this.lineAttributes)
+
+        if (this.allEmpty(i)) {
+          console.log("une ligne est vide, erreur, arret de la methode ");
+          empty = true;
+
+        }
+
+      });
+
+    }
+    if (empty == true) {
+      return;
+    }
+    else {
+      var jsonValue = JSON.stringify(this.lineAttributes);
+      console.log("valeur du json: ", jsonValue);
+      //on fait maintenant appel au web service 
+      if (!this.minDateS || !this.maxDateS) {
+        this.msgs/*AttributesSearch*/.push({ severity: 'error', summary: 'Valeurs manquantes', detail: "Il manque au moins une date." });
+      }
+      else {
+        this.msgs/*AttributesSearch*/.push({ severity: 'info', summary: 'Recherche en cours', detail: "La recherche des blocs est en cours..." });
+
+        this.getData.getJSON("selection/" + jsonValue + "/" + this.minDateS + "/" + this.maxDateS + "/").subscribe(res => {
+          console.log("valeur de la reponse recue :", res);
+          this.blocs = res;
+          this.blocs.forEach(element => {
+            if (element.sessionId == null) {
+              element.sessionId = "Non défini"
+            } if (element.userName == null) element.userName = "X"; if (element.remoteAdress == null) element.remoteAdress = "X"; if (element.softwareName == null) element.softwareName = "X"; if (element.softwareVersion == null) element.softwareVersion = "X"; if (element.timeStamp == null) element.timeStamp = "X"; if (element.className == null) element.className = "X"; if (element.event == null) element.event = "X"; if (element.action == null) element.action = "X"; if (element.actionTarget == null) element.actionTarget = "X"; if (element.actionTargetClass == null) element.actionTargetClass = "X"; if (element.actionDetail == null) element.actionDetail = "X"; if (element.methodName == null) element.methodName = "X"; if (element.agentName == null) element.agentName = "X"; if (element.data == null) element.data = "X"; if (element.type == null) element.type = "X"; if (element.softwareRelease == null) element.softwareRelease = "X";
+
+          })
+          // this.msgsAttributesSearch=[];
+          this.msgs.pop();
+          this.msgs/*AttributesSearch*/.push({ severity: 'success', summary: 'Résultat', detail: res.length + " résultats trouvés !" });
+
+        }, err => {
+          console.log("il y a eu une erreur lors de l'envoi des données " + err);
+          this.msgs = [];
+          this.msgs.push({ severity: 'error', summary: 'Attention', detail: "Le serveur a renvoyé une erreur (inspecter console pour détails)" });
+
+
+        });
+      }
+    }
+  }
+
+
+
 
   infos() {
     this.displayInfos = true;
@@ -510,12 +602,14 @@ export class CalendarComponent implements OnInit {
      */
     let empty: any = true;
     let emptyData: any = true;
-    let size:any=0;
+    let size: any = 0;
+    let indexData :any=0;
     $.each(this.lineAttributes[indice], (index, value) => {
 
       if (index == "data") {
-         size = Object.keys(this.lineAttributes[indice][index]).length;
+        size = Object.keys(this.lineAttributes[indice][index]).length;
         $.each(this.lineAttributes[indice][index], (index2, value2) => {
+         
           console.log("allempty index2", index2, "allempty value2", value2)
           if ((index2 != "" || value2 != "")) {
             if ((index2.substring(0, 15) == "UNKNOWN_KEY_BLL") && (value2 == "")) {
@@ -527,10 +621,20 @@ export class CalendarComponent implements OnInit {
               return;
             }
 
+            
             empty = false;
             emptyData = false;
 
           }
+          //dans le cas où on ait une ligne vide suivie d'une autre ligne
+          else if(index2 == "" || value2 == "")
+            {
+              if(indexData<size-1)
+                {
+                  emptyData=true;
+                }
+            }
+            indexData++;
         })
       }
       else {
@@ -546,17 +650,20 @@ export class CalendarComponent implements OnInit {
 
     }
     else if (empty == false && emptyData == true) {
-      if(size>1)
-    {
-      this.msgs = [];
-      this.msgs.push({ severity: 'error', summary: 'Attention', detail: 'Veuillez supprimer les lignes vides de data avant de lancer la requête.' });
-      return true;
+      if (size > 1) {
+        this.msgs = [];
+        this.msgs.push({ severity: 'error', summary: 'Attention', detail: 'Veuillez supprimer les lignes vides de data avant de lancer la requête.' });
+        return true;
+      }
+      else return false;
     }
-    else return false;
-    }
-    
-    console.log("empty",empty,"emptyData", emptyData," empty && emptyData", empty && emptyData)
+
+    console.log("empty", empty, "emptyData", emptyData, " empty && emptyData", empty && emptyData)
     return empty && emptyData;
+  }
+
+  drop_Database() {
+    this.router.navigate(['dropDB']);
   }
 
 }

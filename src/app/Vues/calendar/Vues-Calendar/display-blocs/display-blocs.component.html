@@ -1,0 +1,22 @@
+<div class="toggle">
+
+  <p-dataTable [value]="blocs" [rows]="30" [paginator]="true" scrollable="true" scrollHeight="500px" scrollWidth="2550px" frozenWidth="320px" selectionMode="single" (onRowSelect)="onRowSelected($event)"
+    unfrozenWidth="2230px">
+    <!--(onFilter)="applyFilter(dt, $event)"-->
+    <p-header>
+      <div style="text-align:left">
+
+        Affichage des blocs relatifs à la requête
+        <p-multiSelect [options]="columnOptions" [(ngModel)]="columns" [maxSelectedLabels]="10"></p-multiSelect>
+
+      </div>
+    </p-header>
+    <p-column field="sessionId" header="SessionID" [style]="{'width':'320px'}" frozen="true"></p-column>
+    <p-column *ngFor="let column of columns" [field]="column.field" [header]="column.header" [style]="{'width':'450px'}"></p-column>
+
+    
+  </p-dataTable>
+  <p-dialog header="Datas sélectionnées" [(visible)]="displayData" modal="modal" width="500" [responsive]="true">
+      <li *ngFor="let data of datas"> {{data}}</li>
+    </p-dialog>
+</div>
