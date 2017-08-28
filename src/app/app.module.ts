@@ -13,10 +13,9 @@ import { CalendarComponent } from './Vues/calendar/calendar.component';
  * DataTableModule: Affichage des traces avancé
  * DropDownModule, MultiSelectModule: Utilisé dans le DataTableModule pour la sélection des filtres
  */
-import {CalendarModule, GrowlModule, SliderModule, SharedModule, OrderListModule, DataTableModule,DropdownModule,MultiSelectModule, DialogModule,ListboxModule, FileUploadModule} from 'primeng/primeng';
+import {CalendarModule, GrowlModule, SharedModule, DataTableModule,DropdownModule,MultiSelectModule, DialogModule,ListboxModule, FileUploadModule} from 'primeng/primeng';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {FormsModule} from '@angular/forms';
-import { SanitizeHtmlPipePipe } from './Pipes/sanitize-html-pipe.pipe';
 import { ToggleTabComponent } from './Vues/calendar/Vues-Calendar/toggle-tab/toggle-tab.component';
 import { routing, appRoutingProviders }  from './app.routing';
 import { LoginPageComponent } from './Vues/login-page/login-page.component';
@@ -31,9 +30,6 @@ import { DropDBComponent } from './Vues/calendar/Vues-Calendar/drop-db/drop-db.c
   declarations: [
     AppComponent,
     CalendarComponent,
-    SanitizeHtmlPipePipe,
-   // OrderableTabComponent,
-    //FilterTableComponent,
     ToggleTabComponent,
     LoginPageComponent,
     UploadFileComponent,
@@ -48,9 +44,7 @@ import { DropDBComponent } from './Vues/calendar/Vues-Calendar/drop-db/drop-db.c
     BrowserAnimationsModule,
     CalendarModule,
     SharedModule,
-    SliderModule,
     GrowlModule,
-    OrderListModule,
     DataTableModule,
     DropdownModule,
     MultiSelectModule,
