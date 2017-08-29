@@ -17,6 +17,11 @@
     
   </p-dataTable>
   <p-dialog header="Datas sélectionnées" [(visible)]="displayData" modal="modal" width="500" [responsive]="true">
-      <li *ngFor="let data of datas"> {{data}}</li>
+      <button pButton type="button" (click)="addBlocToAttributeSelection()" label ="Ajouter ce bloc à la sélection" ></button>
+      
+    <li *ngFor="let data of datas"> {{data}}</li>
+    <p-dataTable [value]="selectionnedBloc" scrollable="true" scrollHeight="200px" resizableColumns="true" columnResizeMode="expand">
+        <p-column *ngFor="let column of columnsEvents" [field]="column.field" [header]="column.header" ></p-column>
+    </p-dataTable> 
     </p-dialog>
 </div>

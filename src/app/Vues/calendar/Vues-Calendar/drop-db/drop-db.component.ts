@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { GetDataService } from '../../../../../Services/get-data.service';
 import {  Message } from 'primeng/primeng';
 import { Router } from "@angular/router/";
@@ -12,6 +12,7 @@ import { Router } from "@angular/router/";
 })
 export class DropDBComponent implements OnInit {
 msgs:Message[]=[];
+
   constructor(private getData : GetDataService, private router: Router) { }
 
   ngOnInit() {

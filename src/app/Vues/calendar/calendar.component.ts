@@ -395,6 +395,7 @@ export class CalendarComponent implements OnInit {
 
   displayTab() {
     console.log("valeur du tableau: ", this.lineAttributes);
+    console.log("valeur de ngfilterline dans calendar ", this.nbFilterLine)
 
 
   }
@@ -455,13 +456,15 @@ export class CalendarComponent implements OnInit {
 
       this.getData.getJSON("selection/" + jsonValue + "/").subscribe(res => {
         console.log("valeur de la reponse recue :", res);
-        this.blocs = res;
-        this.blocs.forEach(element => {
-          if (element.sessionId == null) {
-            element.sessionId = "Non défini"
-          } if (element.userName == null) element.userName = "X"; if (element.remoteAdress == null) element.remoteAdress = "X"; if (element.softwareName == null) element.softwareName = "X"; if (element.softwareVersion == null) element.softwareVersion = "X"; if (element.timeStamp == null) element.timeStamp = "X"; if (element.className == null) element.className = "X"; if (element.event == null) element.event = "X"; if (element.action == null) element.action = "X"; if (element.actionTarget == null) element.actionTarget = "X"; if (element.actionTargetClass == null) element.actionTargetClass = "X"; if (element.actionDetail == null) element.actionDetail = "X"; if (element.methodName == null) element.methodName = "X"; if (element.agentName == null) element.agentName = "X"; if (element.data == null) element.data = "X"; if (element.type == null) element.type = "X"; if (element.softwareRelease == null) element.softwareRelease = "X";
+        if (res.length > 0) {
+          this.blocs = res;
+          this.blocs.forEach(element => {
+            if (element.sessionId == null) {
+              element.sessionId = "Non défini"
+            } if (element.userName == null) element.userName = "X"; if (element.remoteAdress == null) element.remoteAdress = "X"; if (element.softwareName == null) element.softwareName = "X"; if (element.softwareVersion == null) element.softwareVersion = "X"; if (element.timeStamp == null) element.timeStamp = "X"; if (element.className == null) element.className = "X"; if (element.event == null) element.event = "X"; if (element.action == null) element.action = "X"; if (element.actionTarget == null) element.actionTarget = "X"; if (element.actionTargetClass == null) element.actionTargetClass = "X"; if (element.actionDetail == null) element.actionDetail = "X"; if (element.methodName == null) element.methodName = "X"; if (element.agentName == null) element.agentName = "X"; if (element.data == null) element.data = "X"; if (element.type == null) element.type = "X"; if (element.softwareRelease == null) element.softwareRelease = "X";
 
-        })
+          })
+        }
         // this.msgsAttributesSearch=[];
         this.msgs.pop();
         this.msgs/*AttributesSearch*/.push({ severity: 'success', summary: 'Résultat', detail: res.length + " résultats trouvés !" });
@@ -469,7 +472,7 @@ export class CalendarComponent implements OnInit {
       }, err => {
         console.log("il y a eu une erreur lors de l'envoi des données " + err);
         this.msgs = [];
-        this.msgs.push({ severity: 'error', summary: 'Attention', detail: "Le serveur a renvoyé une erreur (inspecter console pour détails)" });
+        this.msgs.push({ severity: 'error', summary: 'Attention', detail: "Le serveur a renvoyé une erreur, certains caractères spéciaux peuvent la causer (/, #))" });
 
 
       });
@@ -529,13 +532,15 @@ export class CalendarComponent implements OnInit {
 
         this.getData.getJSON("selection/" + jsonValue + "/" + this.minDateS + "/" + this.maxDateS + "/").subscribe(res => {
           console.log("valeur de la reponse recue :", res);
-          this.blocs = res;
-          this.blocs.forEach(element => {
-            if (element.sessionId == null) {
-              element.sessionId = "Non défini"
-            } if (element.userName == null) element.userName = "X"; if (element.remoteAdress == null) element.remoteAdress = "X"; if (element.softwareName == null) element.softwareName = "X"; if (element.softwareVersion == null) element.softwareVersion = "X"; if (element.timeStamp == null) element.timeStamp = "X"; if (element.className == null) element.className = "X"; if (element.event == null) element.event = "X"; if (element.action == null) element.action = "X"; if (element.actionTarget == null) element.actionTarget = "X"; if (element.actionTargetClass == null) element.actionTargetClass = "X"; if (element.actionDetail == null) element.actionDetail = "X"; if (element.methodName == null) element.methodName = "X"; if (element.agentName == null) element.agentName = "X"; if (element.data == null) element.data = "X"; if (element.type == null) element.type = "X"; if (element.softwareRelease == null) element.softwareRelease = "X";
+          if (res.length > 0) {
+            this.blocs = res;
+            this.blocs.forEach(element => {
+              if (element.sessionId == null) {
+                element.sessionId = "Non défini"
+              } if (element.userName == null) element.userName = "X"; if (element.remoteAdress == null) element.remoteAdress = "X"; if (element.softwareName == null) element.softwareName = "X"; if (element.softwareVersion == null) element.softwareVersion = "X"; if (element.timeStamp == null) element.timeStamp = "X"; if (element.className == null) element.className = "X"; if (element.event == null) element.event = "X"; if (element.action == null) element.action = "X"; if (element.actionTarget == null) element.actionTarget = "X"; if (element.actionTargetClass == null) element.actionTargetClass = "X"; if (element.actionDetail == null) element.actionDetail = "X"; if (element.methodName == null) element.methodName = "X"; if (element.agentName == null) element.agentName = "X"; if (element.data == null) element.data = "X"; if (element.type == null) element.type = "X"; if (element.softwareRelease == null) element.softwareRelease = "X";
 
-          })
+            })
+          }
           // this.msgsAttributesSearch=[];
           this.msgs.pop();
           this.msgs/*AttributesSearch*/.push({ severity: 'success', summary: 'Résultat', detail: res.length + " résultats trouvés !" });
@@ -543,7 +548,7 @@ export class CalendarComponent implements OnInit {
         }, err => {
           console.log("il y a eu une erreur lors de l'envoi des données " + err);
           this.msgs = [];
-          this.msgs.push({ severity: 'error', summary: 'Attention', detail: "Le serveur a renvoyé une erreur (inspecter console pour détails)" });
+          this.msgs.push({ severity: 'error', summary: 'Attention', detail: "Le serveur a renvoyé une erreur, certains caractères spéciaux peuvent la causer (/, #))" });
 
 
         });
@@ -603,13 +608,13 @@ export class CalendarComponent implements OnInit {
     let empty: any = true;
     let emptyData: any = true;
     let size: any = 0;
-    let indexData :any=0;
+    let indexData: any = 0;
     $.each(this.lineAttributes[indice], (index, value) => {
 
       if (index == "data") {
         size = Object.keys(this.lineAttributes[indice][index]).length;
         $.each(this.lineAttributes[indice][index], (index2, value2) => {
-         
+
           console.log("allempty index2", index2, "allempty value2", value2)
           if ((index2 != "" || value2 != "")) {
             if ((index2.substring(0, 15) == "UNKNOWN_KEY_BLL") && (value2 == "")) {
@@ -621,20 +626,18 @@ export class CalendarComponent implements OnInit {
               return;
             }
 
-            
+
             empty = false;
             emptyData = false;
 
           }
           //dans le cas où on ait une ligne vide suivie d'une autre ligne
-          else if(index2 == "" || value2 == "")
-            {
-              if(indexData<size-1)
-                {
-                  emptyData=true;
-                }
+          else if (index2 == "" || value2 == "") {
+            if (indexData < size - 1) {
+              emptyData = true;
             }
-            indexData++;
+          }
+          indexData++;
         })
       }
       else {

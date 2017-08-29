@@ -33,7 +33,6 @@
   <button pButton type="button"  (click)="attributesSearch()" label="Sans"></button>
   </p-dialog> 
 
-  <button pButton type="button" (click)="infos()" label="Infos"></button>
   <p-dialog header="Informations" [(visible)]="displayInfos" modal="modal" width="600" [responsive]="true">
   <div>
     En haut :
@@ -122,7 +121,7 @@
 <br/>
 <br/>
 <br/>
-<app-display-blocs [blocs]="blocs"></app-display-blocs>
+<app-display-blocs [blocs]="blocs" [tabDataAttributes]="tabDataAttributes" [lineAttributes]="lineAttributes" [nbFilterLine]="nbFilterLine"></app-display-blocs>
 <p-growl [(value)]="msgsAttributesSearch" [life]=1000></p-growl>
 
 

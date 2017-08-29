@@ -8,7 +8,7 @@ declare var $: any;
   styleUrls: ['./toggle-tab.component.css']
 })
 export class ToggleTabComponent implements OnInit {
-  
+
   @Input() traces: any = null;
   @Input() tracesCopie: any = null;
   //@Input() tracesCopie: any = null;
@@ -345,6 +345,7 @@ export class ToggleTabComponent implements OnInit {
   }
 
   addLineToAttributeSelection() {
+    //permet de vérifier qu'il qu'il y a eu au moins 1 résultat (on ne regarde pas la longueur car de base elle vaut 1)
     if (this.traces[this.traces.length - 1].agentName != null) {
       console.log("valeur de la ligne sélectionnée ", this.selectedNumberOfLine)
       this.tabDataAttributes[this.selectedNumberOfLine].key = [];
@@ -352,19 +353,19 @@ export class ToggleTabComponent implements OnInit {
       this.tabDataAttributes[this.selectedNumberOfLine].nbLines = [];
       // this.tabDataAttributes[this.selectedNumberOfLine].push({ key: [], value: [], nbLines: [] });
       this.lineAttributes[this.selectedNumberOfLine] = {};
-      //dans le cas où data ne contient rien, cela permet d'ajouter une ligne d'input de base 
-      if (Object.keys(this.selectedLine.data).length == 0) {
 
-        this.tabDataAttributes[this.selectedNumberOfLine].key.push("");
-        this.tabDataAttributes[this.selectedNumberOfLine].value.push("");
-        this.tabDataAttributes[this.selectedNumberOfLine].nbLines.push(0);
-      }
-      else {
-        $.each(this.selectedLine, (index, value) => {
-          if (index == "data") {
-            console.log("je suis rentré dans la condition index==\"data\"");
+      $.each(this.selectedLine, (index, value) => {
+        if (index == "data") {
+          console.log("je suis rentré dans la condition index==\"data\"");
 
+          //dans le cas où data ne contient rien, cela permet d'ajouter une ligne d'input de base 
+          if (Object.keys(this.selectedLine.data).length == 0) {
 
+            this.tabDataAttributes[this.selectedNumberOfLine].key.push("");
+            this.tabDataAttributes[this.selectedNumberOfLine].value.push("");
+            this.tabDataAttributes[this.selectedNumberOfLine].nbLines.push(0);
+          }
+          else {
 
             $.each(this.selectedLine.data, (index, value) => {
               console.log("valeur de l'index", index, "valeur de value ", value)
@@ -375,15 +376,15 @@ export class ToggleTabComponent implements OnInit {
 
 
             })
-
-          } else {
-            if (value != "X") {
-              this.lineAttributes[this.selectedNumberOfLine][index] = value;
-            }
-
           }
-        })
-      }
+        } else {
+          if (value != "X") {
+            this.lineAttributes[this.selectedNumberOfLine][index] = value;
+          }
+
+        }
+      })
+
     }
 
   }
