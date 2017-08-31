@@ -9,8 +9,8 @@
         <div style="text-align:left">
             <p-multiSelect [options]="columnOptions" [(ngModel)]="columns" [maxSelectedLabels]="10" ></p-multiSelect> 
             <button type="button" pButton (click)="update(dt)" label="Reset"></button>
-            <p-dialog header="Sélection des sessions" [(visible)]="display" modal="modal" width="400" [responsive]="true">
-            <p-listbox #pl [options]="selectOptions"  multiple="multiple" checkbox="checkbox" filter="filter" [style]="{'width':'370px','max-height':'300px'}" (onChange)="onSessionsSelectedChange($event,pl)"></p-listbox>
+            <p-dialog header="Sélection des sessions" [(visible)]="display" modal="modal" width="500" [responsive]="true">
+            <p-listbox #pl [options]="selectOptions"  multiple="multiple" checkbox="checkbox" filter="filter" [style]="{'width':'470px','max-height':'300px'}" (onChange)="onSessionsSelectedChange($event,pl)"></p-listbox>
       
             </p-dialog>
 <button type="button" (click)="showDialog(pl)" pButton icon="fa-external-link-square" label="Sélectionner des sessions spécifiques"></button>

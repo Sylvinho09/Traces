@@ -7,17 +7,22 @@ declare var $: any;
 })
 export class DisplayBlocsComponent implements OnInit {
   columnOptions: any[];
-  columns: { field: string; header: string; }[];
-  //c'est un tableau qui contient les données rentrées par l'utilisateur (hormis data) lors de la sélection des traces par attribut 
-  @Input() tabDataAttributes: any[] = [];
+  columns: { field: string; header: string; }[]
   /* tableau qui contient les valeurs DATAS rentrées par l'utilisateur */
+  @Input() tabDataAttributes: any[] = [];
+  //c'est un tableau qui contient les données rentrées par l'utilisateur (hormis data) lors de la sélection des traces par attribut 
   @Input() lineAttributes: any[] = [];
+  //tableau destiné à contenir des valeurs telles que tab[i]=i.
+  //Depuis la vue, on peut itérer depuis les éléments d'un tableau, c'est pour cela que cet attribut a été créé
   @Input() nbFilterLine: any[] = [];
+  //contiendra les valeurs contenues dans data lors d'un clic sur une ligne
   datas: any[];
+  //contiendra le bloc où la trace cliquée appartient
+  selectionnedBloc: any[] = [];
+  //quand true, affiche la fenetre de dialogue
   displayData: boolean = false;
   columnsEvents: any[] = [];
 
-  selectionnedBloc: any[] = [];
 
   constructor() { }
 
@@ -59,29 +64,24 @@ export class DisplayBlocsComponent implements OnInit {
 
     }
 
-    console.log("valeur de ngFilterLine" + this.nbFilterLine)
-    console.log("valeur de lineAttributes", this.lineAttributes)
-    console.log("valeur de tabDataAttributes", this.tabDataAttributes)
   }
+  //appelée lors d'un clic sur une ligne 
   onRowSelected(event) {
 
-    new Promise((resolve, reject) => {
-      this.datas = [];
+    this.datas = [];
 
-      $.each(event.data.data, (index, value) => {
+    $.each(event.data.data, (index, value) => {
 
-        this.datas.push(index + " : " + value);
-      })
-      resolve();
-    }).then(() => {
-      this.displayData = true;
-
+      this.datas.push(index + " : " + value);
     })
 
+
+    this.displayData = true;
+
+
+
     this.selectionnedBloc = [];
-    console.log("valeur du bloc ", this.blocs)
     var i = this.blocs.findIndex(x => x.objectid == event.data.objectid); //permet de récupérer l'index de la ligne cliquée
-    console.log("valeur de i", i)
     if (event.data.event != "NONE") {
       this.selectionnedBloc.push(this.blocs[i]);
       i++;
@@ -110,16 +110,13 @@ export class DisplayBlocsComponent implements OnInit {
       }
       this.selectionnedBloc = reverseEvents.reverse();
     }
-    console.log("valeur de selectionnedBloc", this.selectionnedBloc);
 
   }
 
+  //permet d'ajouter le bloc auquel appartient la trace cliquée à la sélection par attributs
   addBlocToAttributeSelection() {
 
-    /*this.tabDataAttributes=[];
-    this.lineAttributes=[];
-    this.nbFilterLine=[];
-    this.nbFilterLine.push(0);*/
+
     while (this.tabDataAttributes.length > 0) {
       this.tabDataAttributes.pop();
     }
@@ -129,26 +126,21 @@ export class DisplayBlocsComponent implements OnInit {
     while (this.nbFilterLine.length > 0) {
       this.nbFilterLine.pop();
     }
-    console.log("nbfilterline in addbloc", this.nbFilterLine)
-    //this.nbFilterLine=[];
     //permet de vérifier qu'il qu'il y a eu au moins 1 résultat (on ne regarde pas la longueur car de base elle vaut 1)
     if (this.blocs[this.blocs.length - 1].agentName != null) {
 
-      console.log("valeur du bloc sélectionné ", this.selectionnedBloc)
       this.selectionnedBloc.forEach((tabValue, indice) => {
 
         this.tabDataAttributes.push([]);
         this.tabDataAttributes[indice].key = [];
         this.tabDataAttributes[indice].value = [];
         this.tabDataAttributes[indice].nbLines = [];
-        // this.tabDataAttributes[this.selectedNumberOfLine].push({ key: [], value: [], nbLines: [] });
         this.lineAttributes.push([]);
         this.lineAttributes[indice] = {};
         //dans le cas où data ne contient rien, cela permet d'ajouter une ligne d'input de base 
 
         $.each(tabValue, (index, value) => {
           if (index == "data") {
-            console.log("je suis rentré dans la condition index==\"data\"");
 
             if (Object.keys(tabValue.data).length == 0) {
 
@@ -159,8 +151,7 @@ export class DisplayBlocsComponent implements OnInit {
             else {
 
               $.each(tabValue.data, (index, value) => {
-                console.log("valeur de l'index", index, "valeur de value ", value)
-                console.log("valeur de tabdata a l'indice ", this.tabDataAttributes[indice])
+
                 this.tabDataAttributes[indice].key.push(index)
                 this.tabDataAttributes[indice].value.push(value)
                 this.tabDataAttributes[indice].nbLines.push(this.tabDataAttributes[indice].nbLines.length)
@@ -175,19 +166,15 @@ export class DisplayBlocsComponent implements OnInit {
             }
 
           }
-          // this.nbFilterLine.push(this.nbFilterLine[this.nbFilterLine.length - 1] + 1);
 
 
 
         })
 
-        // this.nbFilterLine.push(this.nbFilterLine[this.nbFilterLine.length - 1] + 1);
         this.nbFilterLine.push(this.nbFilterLine.length)
-        console.log("valeur de nbFilterLine" + this.nbFilterLine)
+
       })
-      console.log("valeur de ngFilterLine" + this.nbFilterLine)
-      console.log("valeur de lineAttributes", this.lineAttributes)
-      console.log("valeur de tabDataAttributes", this.tabDataAttributes)
+
 
     }
   }

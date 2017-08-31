@@ -1,11 +1,6 @@
 
 
-<!--<div class="ui-g">-->
-    <!--<div class="ui-g-12 ui-md-4">
-        <h3>Veuillez sélectionner l'intervalle de temps à observer </h3>
-        <p-calendar [(ngModel)]="value" [locale]="fr" dateFormat="dd MM yy"></p-calendar> {{value}}
-    </div>
-</div>-->
+
 <div>
 <h3> Veuillez sélectionner l'intervalle de temps à observer</h3>
   <button pButton type="button" (click)="onclick()" label="Go !"></button>
@@ -47,7 +42,6 @@
       <li> clé-valeur </li>
       <li> clé- </li>
       <li> -valeur </li>
-      Attention, si pour la même ligne d'attributs il y a 2 clefs identiques dans data, seule la 2ème sera prise en compte.
 
     
     </div>      
@@ -57,10 +51,12 @@
 <table>
   <tr>
     <th > Add/Remove duplicated line </th>
+    <!-- ngFor permet d'itérer sur un tableau et d'en récupérer les éléments --> 
     <th *ngFor="let column of columns" >{{column}}</th>
   </tr>
   <tr *ngFor="let line of nbFilterLine">
 
+    <!-- s'il y a un attribut duplicate dans lineAttributes alors on ne rajoute pas les boutons + et - -->
     <div>
       <td>
     <td *ngIf="!lineAttributes[line].duplicate" > <button  pButton type="button"  id="{{line}}" (click)="addDuplicateLine(line)" label="+"></button></td>
@@ -70,15 +66,13 @@
      <td>
 </div>
 
-    <td><input type="text" id="sessionId{{line}}" [(ngModel)]="lineAttributes[line].sessionId" (input)="displayTab()"/><!--{{lineAttributes[line].sessionId}}--></td>
+    <td><input type="text" id="sessionId{{line}}" [(ngModel)]="lineAttributes[line].sessionId"/><!--{{lineAttributes[line].sessionId}}--></td>
     <td><input type="text" id="username{{line}}" [(ngModel)]="lineAttributes[line].userName"/><!--{{lineAttributes[line].userName}}--></td>
     <td><input type="text" id="remoteAdress{{line}}" [(ngModel)]="lineAttributes[line].remoteAdress"/><!--{{lineAttributes[line].remoteAdress}}--></td>
     <td><input type="text" id="agentName{{line}}" [(ngModel)]="lineAttributes[line].agentName"/><!--{{lineAttributes[line].agentName}}--></td>
     <td><input type="text" id="softwareName{{line}}" [(ngModel)]="lineAttributes[line].softwareName"/><!--{{lineAttributes[line].softwareName}}--></td>
     <td><input type="text" id="softwareRelease{{line}}" [(ngModel)]="lineAttributes[line].softwareRelease"/><!--{{lineAttributes[line].softwareRelease}}--></td>
     <td><input type="text" id="softwareVersion{{line}}" [(ngModel)]="lineAttributes[line].softwareVersion"/><!--{lineAttributes[line].softwareVersion}}--></td>
-   <!-- <td><input type="text" id="dataKey{{line}}" [(ngModel)]="lineAttributes[line].dataKey"/>{{lineAttributes[line].dataKey}}</td>
-    <td><input type="text" id="dataValue{{line}}" [(ngModel)]="lineAttributes[line].dataValue"/>{{lineAttributes[line].dataValue}}</td>-->
     <td> <button pButton type="button" (click)="openSelectionDataDialog(line)" label="Datas"></button></td>
     <td><input type="text" id="type{{line}}" [(ngModel)]="lineAttributes[line].type"/><!--{{lineAttributes[line].type}}--></td>
     <td><input type="text" id="className{{line}}" [(ngModel)]="lineAttributes[line].className"/><!--{{lineAttributes[line].className}}--></td>
@@ -103,7 +97,7 @@
         <th> Valeur </th>
       </tr>
       <tr *ngFor="let line of tabDataAttributes[lineSelected].nbLines">
-        <td> <input type="text" [(ngModel)]="tabDataAttributes[lineSelected].key[line]" (input) ="displayTabData()"/> <!--{{tabDataAttributes[lineSelected].key[line]}}--></td>
+        <td> <input type="text" [(ngModel)]="tabDataAttributes[lineSelected].key[line]"/> <!--{{tabDataAttributes[lineSelected].key[line]}}--></td>
         <td> <input type="text" [(ngModel)]="tabDataAttributes[lineSelected].value[line]"/> <!--{{tabDataAttributes[lineSelected].value[line]}}--></td>
       </tr>
     </table>
@@ -117,6 +111,7 @@
      <h3>Millisecondes: {{slideValueDebut}}</h3>
      <input type="text" [(ngModel)]="slideValueDebut" (input)="handleChangeMinDate()" style="width:190px"/>
 
+     <!-- on peut passer des valeurs au composant qu'on appelle en faisant [attributNEwComposant]="attributComposant" -->
 <app-toggle-tab [traces]="result" [tracesCopie]="resultCop"  [selectOptions]="sessionsOptions" [totalRecords]="totalRecords" [minDate]="minDateS" [maxDate]="maxDateS" [tabDataAttributes]="tabDataAttributes" [lineAttributes]="lineAttributes" ></app-toggle-tab>
 <br/>
 <br/>
@@ -140,4 +135,5 @@
   </div>
   <div>
      </div>
+     <!-- nécessaire pour pouvoir appeler router.navigate --> 
      <router-outlet></router-outlet>

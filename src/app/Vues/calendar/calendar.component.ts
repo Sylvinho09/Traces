@@ -119,14 +119,13 @@ export class CalendarComponent implements OnInit {
      */
     let present = [];
     this.getData.getJSON("between/" + minDate + "/" + maxDate + "/0/").subscribe(res => {
-      console.log(res); if (res == -1) {
+     if (res == -1) {
         this.msgs = [];
         this.msgs.push({ severity: 'error', summary: 'Erreur', detail: "Le serveur a renvoyé un message d'erreur." });
       }
       else {
         this.totalRecords = res[0];
         this.result = res.slice(1, res.length);
-        console.log("nombre total d'élements ", this.totalRecords);
         if (this.result.length == 100000) {
           this.msgs.push({ severity: 'info', summary: 'Performance', detail: 'Pour des raisons de performance, les données renvoyées sont limitées à 100 000. La dernière ligne date du ' + this.result[99999].timeStamp });
 
@@ -138,7 +137,7 @@ export class CalendarComponent implements OnInit {
           } if (element.userName == null) element.userName = "X"; if (element.remoteAdress == null) element.remoteAdress = "X"; if (element.softwareName == null) element.softwareName = "X"; if (element.softwareVersion == null) element.softwareVersion = "X"; if (element.timeStamp == null) element.timeStamp = "X"; if (element.className == null) element.className = "X"; if (element.event == null) element.event = "X"; if (element.action == null) element.action = "X"; if (element.actionTarget == null) element.actionTarget = "X"; if (element.actionTargetClass == null) element.actionTargetClass = "X"; if (element.actionDetail == null) element.actionDetail = "X"; if (element.methodName == null) element.methodName = "X"; if (element.agentName == null) element.agentName = "X"; if (element.data == null) element.data = "X"; if (element.type == null) element.type = "X"; if (element.softwareRelease == null) element.softwareRelease = "X";
 
         }),
-          this.resultCop = this.result, console.log(this.result), this.result.forEach(element => {
+          this.resultCop = this.result, this.result.forEach(element => {
             if (!present[element.sessionId]) {
               this.sessionsOptions.push({ label: element.sessionId, value: element.sessionId });
               present[element.sessionId] = 1;
@@ -163,7 +162,6 @@ export class CalendarComponent implements OnInit {
   onclick() {
 
     /** envoi de la requete rest au serveur  */
-    console.log("clic détecté!");
     var regex = /^[0-9]*$/;
 
     if (this.dMin == null || this.dMax == null) {
@@ -176,23 +174,18 @@ export class CalendarComponent implements OnInit {
     //correspond pas à '' (dans le cas où on rentre une valeur et qu'on l'efface, les variables auront cette valeur)
     else if (!this.slideValueDebut && !this.slideValueFin)//if(this.slideValueDebut==null && this.slideValueFin==null)
     {
-      console.log("les 2 slides values sont nuls");
       this.minDateS = `${this.dMin.getFullYear()}-${this.dMin.getMonth() + 1}-${this.dMin.getDate()} ${this.dMin.getHours() % 12}:${this.dMin.getMinutes()}:${this.dMin.getSeconds()}.0 ${this.dMin.getHours() > 12 ? "PM" : "AM"}`;
       this.maxDateS = `${this.dMax.getFullYear()}-${this.dMax.getMonth() + 1}-${this.dMax.getDate()} ${this.dMax.getHours() % 12}:${this.dMax.getMinutes()}:${this.dMax.getSeconds()}.0 ${this.dMax.getHours() > 12 ? "PM" : "AM"}`;
       this.requestDatesBetween(this.minDateS, this.maxDateS);
 
       /** Faire fonction de getJson paramétrée, l'appeler pour chaque test en settant les bonnes valeurs, pas besoin de callback dans un if else, car seul le premier sera exécuté */
     }
-    else if (!this.slideValueDebut)//if (this.slideValueDebut==null)
-    {
-      console.log("slide value debut est nul");
+    else if (!this.slideValueDebut) {
       this.minDateS = `${this.dMin.getFullYear()}-${this.dMin.getMonth() + 1}-${this.dMin.getDate()} ${this.dMin.getHours() % 12}:${this.dMin.getMinutes()}:${this.dMin.getSeconds()}.0 ${this.dMin.getHours() > 12 ? "PM" : "AM"}`;
       this.requestDatesBetween(this.minDateS, this.maxDateS);
 
     }
-    else if (!this.slideValueFin)//if(this.slideValueFin==null)
-    {
-      console.log("slide value fin est nul");
+    else if (!this.slideValueFin) {
       this.maxDateS = `${this.dMax.getFullYear()}-${this.dMax.getMonth() + 1}-${this.dMax.getDate()} ${this.dMax.getHours() % 12}:${this.dMax.getMinutes()}:${this.dMax.getSeconds()}.0 ${this.dMax.getHours() > 12 ? "PM" : "AM"}`;
       this.requestDatesBetween(this.minDateS, this.maxDateS);
 
@@ -200,12 +193,10 @@ export class CalendarComponent implements OnInit {
     }
     else if (this.slideValueDebut >= 0 && this.slideValueFin <= 999) //|| this.slideValueDebut.match(regex) ||this.slideValueFin.match(regex))
     {
-      console.log("valueees : " + this.slideValueDebut + " " + this.slideValueFin);
       this.requestDatesBetween(this.minDateS, this.maxDateS);
 
     }
     else {
-      console.log("Veuillez rentrer une valeur comprise entre 0 et 999.")
       this.show();
     }
   }
@@ -245,7 +236,6 @@ export class CalendarComponent implements OnInit {
       }
       else {
         this.slideValueDebut = null;
-        console.log("Vous devez saisir un nombre valide.");
 
       }
     }
@@ -264,16 +254,15 @@ export class CalendarComponent implements OnInit {
       }
       else {
         //this.slideValueFin=null;
-        console.log("Vous devez saisir un nombre valide.");
 
       }
     }
   }
 
+  //appelé lors d'un clic sur le bouton "Déconnexion"
   unlog() {
     this.getData.getJSON("unlog/").subscribe(res => {
       if (res == 1) {
-        console.log("Déconnexion réussie");
         this.msgs = [];
         this.msgs.push({ severity: 'info', summary: 'Déconnexion', detail: 'Déconnexion réussie !' });
 
@@ -282,10 +271,11 @@ export class CalendarComponent implements OnInit {
       }
 
     }, err => {
-      console.log("Il y a eu une erreur lors de la déconnexion")
     })
   }
 
+  //appelé lors d'un clic sur le bouton "+" situé à gauche de "Rechercher les blocs correspondant", 
+  //permet d'ajouter une ligne et de faire un AND
   addLine() {
     this.nbFilterLine.push(this.nbFilterLine[this.nbFilterLine.length - 1] + 1);
     this.lineAttributes.push({
@@ -297,9 +287,9 @@ export class CalendarComponent implements OnInit {
     this.tabDataAttributes[this.tabDataAttributes.length - 1].key.push("");
     this.tabDataAttributes[this.tabDataAttributes.length - 1].value.push("");
     this.tabDataAttributes[this.tabDataAttributes.length - 1].nbLines.push(0);
-    console.log(this.nbFilterLine)
   }
 
+  //appelé lors d'un clic sur le bouton "+" du dessous, permet d'ajouter une ligne et de faire un OR(la ligne est alors dupliquée)
   //le 1er ajout devra être à l'indice line+1, le 2nd line+2 etc
   addDuplicateLine(line: any) {
 
@@ -310,7 +300,6 @@ export class CalendarComponent implements OnInit {
 
     var lineAttDeb: any[] = this.lineAttributes.slice(0, i);
     var lineAttFin: any[] = this.lineAttributes.slice(i, this.lineAttributes.length);
-    console.log(lineAttDeb, lineAttFin);
 
     this.nbFilterLine.push(this.nbFilterLine[this.nbFilterLine.length - 1] + 1);
     lineAttDeb.push({
@@ -322,7 +311,6 @@ export class CalendarComponent implements OnInit {
     //lineAttDeb.push(lineAttDeb[lineAttDeb.length-1]);
 
     this.lineAttributes = lineAttDeb.concat(lineAttFin);
-    console.log("lineAttributes :", this.lineAttributes);
 
     var tabLineAttDeb: any[] = this.tabDataAttributes.slice(0, i);
     var tabLineAttFin: any[] = this.tabDataAttributes.slice(i, this.tabDataAttributes.length);
@@ -330,11 +318,9 @@ export class CalendarComponent implements OnInit {
     //AJOUTER LES VALEURS DE DATA DE LA LIGNE D'AVANT 
 
     for (let i = 0; i < tabLineAttDeb[tabLineAttDeb.length - 2].key.length; i++) {
-      console.log("je suis dans la boucle");
       tabLineAttDeb[tabLineAttDeb.length - 1].key.push(tabLineAttDeb[tabLineAttDeb.length - 2].key[i])
       tabLineAttDeb[tabLineAttDeb.length - 1].value.push(tabLineAttDeb[tabLineAttDeb.length - 2].value[i])
       tabLineAttDeb[tabLineAttDeb.length - 1].nbLines.push(tabLineAttDeb[tabLineAttDeb.length - 2].nbLines[i])
-      console.log("valeur de tabLineAttDeb", tabLineAttDeb)
 
     }
 
@@ -343,6 +329,7 @@ export class CalendarComponent implements OnInit {
 
   }
 
+  //supprime la dernière ligne 
   removeLine() {
     if (this.nbFilterLine.length > 1) {
 
@@ -363,10 +350,6 @@ export class CalendarComponent implements OnInit {
     if (this.nbFilterLine.length > 1 && line != this.nbFilterLine.length - 1 && this.lineAttributes[line + 1].duplicate == "true") {
 
       this.nbFilterLine.pop();
-      //quand on supprime une ligne dupliquée, on doit également supprimer les datas 
-      /*this.tabDataAttributes[this.lineSelected].key.pop();
-      this.tabDataAttributes[this.lineSelected].value.pop();
-      this.tabDataAttributes[this.lineSelected].nbLines.pop();*/
 
       var i = line + 1;
       while (i != this.lineAttributes.length && this.lineAttributes[i].duplicate == "true") {
@@ -393,12 +376,6 @@ export class CalendarComponent implements OnInit {
     }
   }
 
-  displayTab() {
-    console.log("valeur du tableau: ", this.lineAttributes);
-    console.log("valeur de ngfilterline dans calendar ", this.nbFilterLine)
-
-
-  }
 
   //fonction appelée lors d'un click sur "rechercher les blocs correspondants", pour afficher la fenetre de dialogue
   //permettant de choisir avec ou sans intervalle de temps
@@ -406,6 +383,9 @@ export class CalendarComponent implements OnInit {
     this.displayBlocChoice = true;
   }
 
+  //lance la recherche des blocs sans limite de temps
+  //les tableaux devant avoir des indices différents, si on rentre 2 valeurs telles que -valeur -valeur
+  //alors la deuxieme rentrée supprimera la premiere, je donne donc le nom "UNKNOWN_KEY_BLLX aux clefs qui ne sont pas indiquées pour éviter ce problème
   attributesSearch() {
 
     //le mettre à faux permet à la fenetre de dialogue de se fermer automatiquement
@@ -431,13 +411,10 @@ export class CalendarComponent implements OnInit {
             }
           })
         }
-        console.log("valeur de index", index, "valeur de value", value)
         this.lineAttributes[i]["data"][value] = this.tabDataAttributes[i].value[index].trim();
         index++;
-        console.log("valeur de lineAttributes après insertion de data ", this.lineAttributes)
 
         if (this.allEmpty(i)) {
-          console.log("une ligne est vide, erreur, arret de la methode ");
           empty = true;
 
         }
@@ -450,12 +427,10 @@ export class CalendarComponent implements OnInit {
     }
     else {
       var jsonValue = JSON.stringify(this.lineAttributes);
-      console.log("valeur du json: ", jsonValue);
       //on fait maintenant appel au web service 
       this.msgs/*AttributesSearch*/.push({ severity: 'info', summary: 'Recherche en cours', detail: "La recherche des blocs est en cours..." });
 
       this.getData.getJSON("selection/" + jsonValue + "/").subscribe(res => {
-        console.log("valeur de la reponse recue :", res);
         if (res.length > 0) {
           this.blocs = res;
           this.blocs.forEach(element => {
@@ -470,7 +445,6 @@ export class CalendarComponent implements OnInit {
         this.msgs/*AttributesSearch*/.push({ severity: 'success', summary: 'Résultat', detail: res.length + " résultats trouvés !" });
 
       }, err => {
-        console.log("il y a eu une erreur lors de l'envoi des données " + err);
         this.msgs = [];
         this.msgs.push({ severity: 'error', summary: 'Attention', detail: "Le serveur a renvoyé une erreur, certains caractères spéciaux peuvent la causer (/, #))" });
 
@@ -479,6 +453,7 @@ export class CalendarComponent implements OnInit {
     }
   }
 
+  //idem que la méthode du dessus mais avec intervalle de temps
   attributesSearchWithDates() {
     //le mettre à faux permet à la fenetre de dialogue de se fermer automatiquement
     this.displayBlocChoice = false;
@@ -503,13 +478,10 @@ export class CalendarComponent implements OnInit {
             }
           })
         }
-        console.log("valeur de index", index, "valeur de value", value)
         this.lineAttributes[i]["data"][value] = this.tabDataAttributes[i].value[index].trim();
         index++;
-        console.log("valeur de lineAttributes après insertion de data ", this.lineAttributes)
 
         if (this.allEmpty(i)) {
-          console.log("une ligne est vide, erreur, arret de la methode ");
           empty = true;
 
         }
@@ -522,7 +494,6 @@ export class CalendarComponent implements OnInit {
     }
     else {
       var jsonValue = JSON.stringify(this.lineAttributes);
-      console.log("valeur du json: ", jsonValue);
       //on fait maintenant appel au web service 
       if (!this.minDateS || !this.maxDateS) {
         this.msgs/*AttributesSearch*/.push({ severity: 'error', summary: 'Valeurs manquantes', detail: "Il manque au moins une date." });
@@ -531,7 +502,6 @@ export class CalendarComponent implements OnInit {
         this.msgs/*AttributesSearch*/.push({ severity: 'info', summary: 'Recherche en cours', detail: "La recherche des blocs est en cours..." });
 
         this.getData.getJSON("selection/" + jsonValue + "/" + this.minDateS + "/" + this.maxDateS + "/").subscribe(res => {
-          console.log("valeur de la reponse recue :", res);
           if (res.length > 0) {
             this.blocs = res;
             this.blocs.forEach(element => {
@@ -546,7 +516,6 @@ export class CalendarComponent implements OnInit {
           this.msgs/*AttributesSearch*/.push({ severity: 'success', summary: 'Résultat', detail: res.length + " résultats trouvés !" });
 
         }, err => {
-          console.log("il y a eu une erreur lors de l'envoi des données " + err);
           this.msgs = [];
           this.msgs.push({ severity: 'error', summary: 'Attention', detail: "Le serveur a renvoyé une erreur, certains caractères spéciaux peuvent la causer (/, #))" });
 
@@ -558,20 +527,18 @@ export class CalendarComponent implements OnInit {
 
 
 
-
+  //déclenché lors d'un clic sur le bouton "Infos"
   infos() {
     this.displayInfos = true;
   }
 
+  //ajout d'une ligne lors de la saisie des valeurs de datas
   addData() {
     this.tabDataAttributes[this.lineSelected].nbLines.push(this.tabDataAttributes[this.lineSelected].nbLines.length);//[this.tabDataAttributes[this.lineSelected].nbLines.length -1]+1);
-    //this.nbDataChosen.push(this.nbDataChosen[this.nbDataChosen.length - 1] + 1);
-    // this.dataAttributes.push({key:"", value:""});
     this.tabDataAttributes[this.lineSelected].key.push("");
-    //this.dataAttributes.value.push("");
     this.tabDataAttributes[this.lineSelected].value.push("");
   }
-
+//suppression d'une ligne lors de la saisie des valeurs de datas
   removeData() {
     if (this.tabDataAttributes[this.lineSelected].nbLines.length > 1) {
 
@@ -579,21 +546,15 @@ export class CalendarComponent implements OnInit {
       //this.dataAttributes.pop();
       this.tabDataAttributes[this.lineSelected].key.pop();
       this.tabDataAttributes[this.lineSelected].value.pop();
-      console.log("je suis rentré dans la condition")
-      console.log("valeur de tabDataAttributes :", this.tabDataAttributes)
-      console.log("valeur de la ligne sélectionnée ", this.lineSelected)
+     
     }
   }
   openSelectionDataDialog(line: any) {
     this.lineSelected = line;
-    console.log("valeur de la ligne sélectionnée ", this.lineSelected)
     this.displayDataChoice = true;
   }
 
-  displayTabData() {
-    console.log("datas :", this.tabDataAttributes)
-  }
-
+  //permet de vérifier s'il n'y a pas de lignes vides dans la sélection par attributs
   allEmpty(indice: any) {
     /** 
      * hasOwnProperty permet de vérifier que property est bien un attribut créé par l'utilisateur et non des propriétés héritées par la classe Object de base
@@ -615,12 +576,9 @@ export class CalendarComponent implements OnInit {
         size = Object.keys(this.lineAttributes[indice][index]).length;
         $.each(this.lineAttributes[indice][index], (index2, value2) => {
 
-          console.log("allempty index2", index2, "allempty value2", value2)
           if ((index2 != "" || value2 != "")) {
             if ((index2.substring(0, 15) == "UNKNOWN_KEY_BLL") && (value2 == "")) {
-              console.log("valeur de size ", size)
               if (size > 1) {
-                console.log("iciiiiiii")
                 emptyData = true;
               }
               return;
@@ -642,7 +600,6 @@ export class CalendarComponent implements OnInit {
       }
       else {
         if (index != "duplicate" && value != "") {
-          console.log("itération dans allEmpty")
           empty = false;
         }
       }
@@ -661,7 +618,6 @@ export class CalendarComponent implements OnInit {
       else return false;
     }
 
-    console.log("empty", empty, "emptyData", emptyData, " empty && emptyData", empty && emptyData)
     return empty && emptyData;
   }
 

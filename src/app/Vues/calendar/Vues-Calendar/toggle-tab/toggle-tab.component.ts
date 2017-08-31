@@ -9,43 +9,54 @@ declare var $: any;
 })
 export class ToggleTabComponent implements OnInit {
 
+  //destiné à accueillir le résultat de la requête par date
   @Input() traces: any = null;
+  //sera utilisé pour la sélection des sessions
   @Input() tracesCopie: any = null;
-  //@Input() tracesCopie: any = null;
-  tracesVide: any;
+  //sera utilisé pour faire des ajustements au niveau des filtres opérés par PrimeNG
   unfound: boolean = false;
+  //idem
   newinput: boolean = false;
   keytoFilter: any;
-
   begin: boolean = false;
-  columns: any[]
-  columnOptions: SelectItem[];
+
+  //contient le nom des colonnes qu'aura le tableau (utilisé par columnOptions)
+  columns: any[]=[]
+  columnOptions: SelectItem[]=[];
   //pour l'affichage du message en cas de filtre qui ne donne rien 
   msgs: Message[] = [];
   //utilisé pour l'affichage de la fenetre de sélection des sessions
   display: boolean = false;
   //utilisé pour afficher les valeurs dans l'objet datas
   displayData: boolean = false;
+  //contiendra les valeurs contenus dans l'attribut data lors d'un clic sur une ligne d'un tableau
   datas: any[];
-  //permet de savoir si c'est la premiere fois que l'utilisateur veut filtrer par session pour cocher toutes les cases
-  isFirstSelection: boolean = true;
-  @Input() selectOptions: any;
+  //contient le nombre total de valeurs contenues dans l'intervalle indiqué (utilisé pour télécharger les fichiers)
   @Input() totalRecords: any = 0;
+  //dates min et max indiquées par l'utilisateur (utilisées aussi pour le téléchargement des fichiers)
   @Input() minDate: any;
   @Input() maxDate: any;
-  // tranche: any = 1;
-  events: any[] = []; //sa valeur indiquera la valeur des blocs actions
+  //sa valeur indiquera la valeur des blocs actions
+  events: any[] = []; 
+  //contient le nom des colonnes qu'aura le tableau affiché lors d'un clic sur une ligne du tableau principal
   columnsEvents: any[] = [];
   numberOfLines: SelectItem[] = [];
+  //contient le numéro de la ligne à laquelle il faut ajouter la ligne voulue
   selectedNumberOfLine: any = 0;
+  //contient la valeur de la trace cliquée sur le tableau
   selectedLine: any;
+  //valeurs indiquées dans "data" dans la sélection par attributs
   @Input() tabDataAttributes: any[] = [];
+  //valeurs indiquées dans le reste dans la sélection par attributs
   @Input() lineAttributes: any[] = [];
+ //contiendra la liste des sessions
+  @Input() selectOptions:any[]=[];
   constructor(private getData: GetDataService) {
   }
 
   ngOnInit() {
 
+    //on initialise la variable traces (cela sera affiché quand pas de recherche effectuée)
     this.traces = [
       { sessionId: 'Aucune recherche effectuée.' }
 
@@ -100,10 +111,12 @@ export class ToggleTabComponent implements OnInit {
 
   }
 
+  //permet d'afficher le composant PrimeNG appelé p-growl quand on l'appelle
   show() {
     this.msgs.push({ severity: 'error', summary: 'Attention', detail: 'Ce filtre n\'a rien donné...' });
   }
 
+  //reset les filtres
   update(dt: DataTable) {
     dt.reset();
     //met "" dans le champ input filtre colonne
@@ -170,6 +183,7 @@ export class ToggleTabComponent implements OnInit {
   }
 
 
+  //lors d'un clic sur une session dans la fenetre de dialogue "choix des sessions"
   onSessionsSelectedChange(event, pl: Listbox) {
     if (this.tracesCopie != null) {
       this.traces = []//this.tracesCopie;
@@ -200,26 +214,28 @@ export class ToggleTabComponent implements OnInit {
    */
 
   /**
-   * Important: les Fat Arrows c'est la vie, ils permettent de ne pas perdre le scope (contrairement à fct(function(){...});)
+   *Déclenché lors d'un clic sur une ligne du tableau:
+   affiche les valeurs dans l'attribut data
+   affiche le bloc sélectionné
+   donne la possibilité d'ajouter la ligne cliquée à la sélection par attributs
    */
   onRowSelected(event) {
 
     //on récupère la valeur de la trace associée à la ligne cliquée pour pouvoir
     //récupérer les valeurs des attributs pour la méthode d'ajout des attributs dans la sélection par attributs
     this.selectedLine = event.data;
-    console.log("valeur de selectedLine ", this.selectedLine);
-    new Promise((resolve, reject) => {
+  
       this.datas = [];
 
       $.each(event.data.data, (index, value) => {
 
         this.datas.push(index + " : " + value);
       })
-      resolve();
-    }).then(() => {
+  
+   
       this.displayData = true;
 
-    })
+    
 
     this.numberOfLines = [];
     for (let i = 0; i < this.tabDataAttributes.length; i++) {
@@ -269,6 +285,7 @@ export class ToggleTabComponent implements OnInit {
     }
   }
 
+  //permet de télécharger l'ensemble des résultats
   downloadAndExport() {
     let downloadTraces: any[] = [];
     let j = 1;
@@ -291,19 +308,15 @@ export class ToggleTabComponent implements OnInit {
     else {
       new Promise((resolve, reject) => {
         for (let i = 100000; i < this.totalRecords; i += 100000) {
-          console.log("requetage d'une tranche");
           this.getData.getJSON("between/" + this.minDate + "/" + this.maxDate + "/" + j + "/").subscribe(res => {
-            console.log("valeur de res " + j + " ", res);
 
 
-            console.log("valeur de i: " + i)
             this.exportJson(res);
             this.msgs = [];
             this.msgs.push({ severity: 'info', summary: 'Téléchargement', detail: "Téléchargement en cours... " + j + "/" + totalDownload });
 
             if (i + 100000 > this.totalRecords) //car on commence à la 100001 eme valeur
             {
-              console.log("je lance le resolve");
               resolve();
             }
           })
@@ -344,10 +357,10 @@ export class ToggleTabComponent implements OnInit {
     }
   }
 
+  //permet d'ajouter une ligne de traces à la sélection par attributs
   addLineToAttributeSelection() {
     //permet de vérifier qu'il qu'il y a eu au moins 1 résultat (on ne regarde pas la longueur car de base elle vaut 1)
     if (this.traces[this.traces.length - 1].agentName != null) {
-      console.log("valeur de la ligne sélectionnée ", this.selectedNumberOfLine)
       this.tabDataAttributes[this.selectedNumberOfLine].key = [];
       this.tabDataAttributes[this.selectedNumberOfLine].value = [];
       this.tabDataAttributes[this.selectedNumberOfLine].nbLines = [];
@@ -356,7 +369,6 @@ export class ToggleTabComponent implements OnInit {
 
       $.each(this.selectedLine, (index, value) => {
         if (index == "data") {
-          console.log("je suis rentré dans la condition index==\"data\"");
 
           //dans le cas où data ne contient rien, cela permet d'ajouter une ligne d'input de base 
           if (Object.keys(this.selectedLine.data).length == 0) {
@@ -368,8 +380,6 @@ export class ToggleTabComponent implements OnInit {
           else {
 
             $.each(this.selectedLine.data, (index, value) => {
-              console.log("valeur de l'index", index, "valeur de value ", value)
-              console.log("valeur de tabdata a l'indice ", this.tabDataAttributes[this.selectedNumberOfLine])
               this.tabDataAttributes[this.selectedNumberOfLine].key.push(index)
               this.tabDataAttributes[this.selectedNumberOfLine].value.push(value)
               this.tabDataAttributes[this.selectedNumberOfLine].nbLines.push(this.tabDataAttributes[this.selectedNumberOfLine].nbLines.length)
@@ -388,23 +398,7 @@ export class ToggleTabComponent implements OnInit {
     }
 
   }
-  /*loadLazy(event) {
-    console.log("je suis dans l'event", event.first);*/
 
-  /**
-   * event.first est la position de la premiere ligne dans traces. Si elle vaut entre 10001 et 10029 alors il faut charger les nouvelles données 
-   */
-  /* if (((event.first)%10000)<30 &&((event.first)%10000)>0) {
-     console.log("je dois requeter pour obtenir la page suivante")
-     this.tranche++;
-     this.getData.getJSON("between/" + this.minDate + "/" + this.maxDate + this.tranche).subscribe(res => {
-       this.traces = res;
-
-     }, err => {
-       console.log("Erreur lors de la requete de lazy load");
-     })
-   }
- }*/
 
 }
 

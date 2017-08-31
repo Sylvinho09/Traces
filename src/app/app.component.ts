@@ -36,15 +36,6 @@ console.log("Une erreur est survenue lors de l'envoi de amiloggedin ", err)
 });
     
 
-    /*this.getData.getJSON("customers").subscribe(res=>this.values=res,
-					err=>console.error(err+" Erreur lors de la récupération des données"),
-					() => console.log('Subscribing success'));*/
-
-/*this.getData.getJSON("allTraces").subscribe(res=>this.traces=res,
-					err=>console.error(err+" Erreur lors de la récupération des traces"),
-					() => console.log('traces ubscribing success'));*/
-          
- 
   
   }
 

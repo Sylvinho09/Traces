@@ -18,13 +18,15 @@ msgs:Message[]=[];
   ngOnInit() {
   }
 
+  //fait appel au serveur pour supprimer toute la base de données
+  //le router permet de changer de page (<router-outler> dans la vue)
+  //GetDataService est une classe contenue dans le dossier Services
 drop_Database()
 {
   this.msgs.push({ severity: 'info', summary: 'Base de données en cours de suppression', detail: "Veuillez patienter..." });
   this.getData.getJSON("dropDB").subscribe(res =>
   {
     this.msgs.pop();
-   // this.msgs.push({ severity: 'success', summary: 'Success', detail: "Base de données vidée !" });
     this.router.navigate(['Analyzer']);
   },
   err =>

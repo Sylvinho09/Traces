@@ -20,8 +20,6 @@ export class LoginPageComponent implements OnInit {
   }
 
   login(f: NgForm) {
-    console.log("j'envoie la requete", f.value);
-console.log("trim", f.value.id.trim(), f.value.id);
     if (f.value.id.trim() == "" || f.value.password.trim() == "") {
       this.msgs = []
       this.msgs.push({ severity: 'error', summary: 'Attention', detail: 'Veuillez remplir tous les champs.' });
@@ -32,20 +30,17 @@ else
 {
     this.getData.getJSON("login/" + f.value.id.trim() + "/" + f.value.password.trim() + "/").subscribe(res => {
       if (res == -1) {
-        console.log("Votre mot de passe est incorrect");
         this.msgs = []
         this.msgs.push({ severity: 'error', summary: 'Attention', detail: 'Votre mot de passe est incorrect.' });
 
       }
       else if (res == 1) {
-        console.log("L'identification a fonctionné");
         this.router.navigate(['Analyzer']);
       }
       else if (res == -2) {
         this.msgs = []
         this.msgs.push({ severity: 'error', summary: 'Attention', detail: 'Aucun compte n\'est associé à cet identifiant.' });
 
-        console.log("Aucun compte n'est associé à cet identifiant");
       }
     }, err => {
         console.log("Une erreur est survenue ! ", err)
