@@ -20,15 +20,16 @@ export class AppComponent implements OnInit{
   public constructor(private getData:GetDataService, private router:Router){}
 
 
-
+//app.component est directement appelé lors du lancement de l'application
+//on teste donc si l'utilisateur est connecté, et on le redirige ou non vers la page de login selon le résultat
   ngOnInit()
   {
  
       this.getData.getJSON("amiloggedin/").subscribe(res => {
-        if(res <0) {console.log("vous n'êtes pas connecté")
+        if(res <0) {
            this.router.navigate(['loginPage']); 
         }
-    else {console.log("vous êtes connecté")
+    else {
            this.router.navigate(['Analyzer']); 
     }
 }, err => {

@@ -27,12 +27,12 @@ return observable;
 }
 
 
-
+//fonction qui était utilisée lorsqu'au début du projet il fallait pouvoir rentrer un fichier et envoyer
+//son contenu au serveur. N'est plus utilisée maintenant
 postJSON(body:any): Observable<any>
 {
   let url ="http://10.32.100.49:8080/TracesRestEE/services/newTraces";
    var headers = new Headers ();
-  //headers.append("Content-Type","application/json");
   let options = new RequestOptions({withCredentials: true , headers: headers});
  
   let observable=this.http.post(url, body, options); 
